@@ -13,6 +13,7 @@ public class ComputeSHA
         }
 
         FileInputStream file = null;
+        MessageDigest md;
 
         try
         { 
@@ -27,12 +28,17 @@ public class ComputeSHA
                 code = file.read();
             }
 
-            MessageDigest md = MessageDigest.getInstance("SHA-1");
-            md.reset();
-            System.out.print(content);
-            byte[] b = content.getBytes();
-            md.update(b);
-            System.out.println(md.digest().toString());	
+            md = MessageDigest.getInstance("SHA-1");
+            md.update(content.getBytes());
+            byte[] hash = md.digest();
+            
+            StringBuffer stringBuffer = new StringBuffer();
+            for(byte b: hash)
+            {
+                stringBuffer.append(String.format("%02x", b & 0xff));
+            }
+            
+            System.out.println(stringBuffer.toString());
         }
 
         catch (NoSuchAlgorithmException e)
