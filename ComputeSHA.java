@@ -17,22 +17,20 @@ public class ComputeSHA
 
         try
         { 
+            md = MessageDigest.getInstance("SHA-1");
             file = new FileInputStream(args[0]);
-   	    int code = file.read();
-            String content = new String();
+            byte[] buffer = new byte[1024];
+   	    int n = 0;
  
-            while(code != -1)
+            while((n = file.read(buffer)) != -1)
             {
-                char c = (char) code;
-                content += c;
-                code = file.read();
+                md.update(buffer, 0, n);
             }
 
-            md = MessageDigest.getInstance("SHA-1");
-            md.update(content.getBytes());
             byte[] hash = md.digest();
             
             StringBuffer stringBuffer = new StringBuffer();
+            
             for(byte b: hash)
             {
                 stringBuffer.append(String.format("%02x", b & 0xff));
