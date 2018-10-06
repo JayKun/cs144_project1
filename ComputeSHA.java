@@ -12,33 +12,39 @@ public class ComputeSHA
             System.exit(0);
         }
 
-        FileInputStream in = null;
-        
+        FileInputStream file = null;
+
         try
-        {
+        { 
+            file = new FileInputStream(args[0]);
+   	    int code = file.read();
+            String content = new String();
+ 
+            while(code != -1)
+            {
+                char c = (char) code;
+                content += c;
+                code = file.read();
+            }
+
             MessageDigest md = MessageDigest.getInstance("SHA-1");
+            md.reset();
+            System.out.print(content);
+            byte[] b = content.getBytes();
+            md.update(b);
+            System.out.println(md.digest().toString());	
         }
+
         catch (NoSuchAlgorithmException e)
         {
             System.out.println("No such algorithm");
             System.exit(0);
         }
-        finally
+        
+        catch (IOException e)
         {
-            in = new FileInputStream(args[0]);
-	    int code = in.read();
-            String content = new String();
-
-            while(code != -1)
-            {
-                char c = (char) code;
-		content += c;
-		code = in.read();
-            }
-            System.out.print(content);
-            byte[] b = content.getBytes();
-            md.update(b);
-            System.out.print(md.digest().toString());	
+            System.out.println("IO error");
+            System.exit(0);
         }
     }
 }
